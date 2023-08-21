@@ -1,0 +1,334 @@
+
+<nav class="navbar bg-success-subtle fixed-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="../../assets/logo.png" alt="Bootstrap" width="50" height="34">
+        <h4 class="d-inline ms-3 mb-0">Food footprint calculator</h4> 
+      </a>
+    </div>
+  </nav>
+<div class="m-0 w-100 pb-3">
+    <div class="row w-100 pt-3">
+        <div class="col-12 p-0">
+            <div class="rounded w-100">
+                <div class="row w-100 h-100 ps-4">
+
+                    <!-- Colonna di sinistra - Foods -->
+                    <div class="col-4 border-end px-4 py-1 h-100 ingredients-col">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h4 class="d-inline">Ingredienti</h4>
+                            <button class="btn btn-success" (click)="resetFilters()">Reset</button>
+                        </div>
+                        <div class="border-bottom pb-3 mb-3 d-flex flex-column">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Filtra per nome" aria-label="Username" aria-describedby="basic-addon1" [(ngModel)]="filterName" (change)="filterFoods()">
+                                <select class="form-select" aria-label="Default select example" [(ngModel)]="filterCategory" (change)="filterFoods()">
+                                    <option value="" selected>Tutti</option>
+                                    <option value="{{food}}" *ngFor="let food of foodCategories">{{food}}</option>
+                                </select>
+                            </div>
+                            <label for="customRange3" *ngIf="listSwitch">Indice inquinante</label>
+                            <div class="d-flex" *ngIf="listSwitch">
+                                <span class="mx-2">0</span>
+                                <input type="range" class="form-range my-range" min="0" max="1000" step="1" id="customRange3" [(ngModel)]="filterEvValue" (change)="filterFoods()">
+                                <span class="mx-2">100</span>
+                            </div>
+                            <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic radio toggle button group">
+                                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked (click)="switchTrue()">
+                                <label class="btn btn-outline-success" for="btnradio1">Ingredienti</label>
+                              
+                                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" (click)="switchFalse()">
+                                <label class="btn btn-outline-success" for="btnradio2">Ricette</label>
+                              </div>
+                          </div>
+                        <div
+                        class="drop-zone-food-container position-relative"
+                        cdkDropList
+                        #todoList="cdkDropList"
+                        [cdkDropListData]="filteredAndVisibleFoods"
+                        [cdkDropListConnectedTo]="[doneList]"
+                        (cdkDropListDropped)="drop($event)">
+                        <span class="count-results">Risultati {{filteredAndVisibleFoods.length}} elementi</span>
+                            <div class="drop-zone-food">
+                                <div class="drag-el my-2" *ngFor="let food of filteredAndVisibleFoods" cdkDrag>
+                                    <div class="img-wrapper" >
+                                        <img src="{{food.image}}" alt="{{food.name}}" class="food-img">
+                                    </div>
+                                    <span class="d-block">{{ food.name }}</span>
+                                    <div class="input-group">
+                                        <input *ngIf="!food.ingredients" [(ngModel)]="food.defaultWeight" type="number" class="form-control ingredient-weight text-secondary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <!-- Colonna centrale - Piatto -->
+                    <div class="col-4 d-flex flex-column justify-content-between border-end px-5 py-1 position-relative">
+
+                        <!-- Lista ingedienti inseriti nelle ricetta -->
+                        <div>
+                            <h4>La tua ricetta</h4>
+                            <ul class="list-group recipe border rounded">
+                                <li *ngFor="let food of done; let i = index" class="list-group-item border-0">
+                                    <ul *ngIf="food.ingredients" class="list-group">
+                                        <span>{{food.name}}</span>
+                                        <li *ngFor="let ingredient of food.ingredients; let index = index" class="list-group-item border-0">
+                                            <div class="img-wrapper">
+                                                <img src="{{ingredient.image}}" alt="{{ingredient.name}}" class="food-img">
+                                            </div>
+                                            {{ingredient.name}} {{ingredient.defaultWeight}} gr.
+                                            <div class="input-group">
+                                                <input [(ngModel)]="ingredient.defaultWeight" (change)="setWeightAndScale()" type="number" class="form-control ingredient-weight text-secondary">
+                                                <button class="btn btn-danger" (click)="removeFood(food, index)"><i class="fa-solid fa-trash-can"></i></button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul *ngIf="!food.ingredients" class="list-group border-bottom pb-3">
+                                        <li class="list-group-item border-0">
+                                            <div class="img-wrapper">
+                                                <img src="{{food.image}}" alt="{{food.name}}" class="food-img">
+                                            </div>
+                                            {{food.name}} {{food.defaultWeight}} gr.
+                                            <div class="input-group">
+                                                <input [(ngModel)]="food.defaultWeight" (change)="setWeightAndScale()" type="number" class="form-control ingredient-weight text-secondary">
+                                                <button class="btn btn-danger" (click)="removeFood(food, i)"><i class="fa-solid fa-trash-can"></i></button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Attenzione</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Sei sicuro di voler eliminare questa ricetta?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteRecipe(done[0].name)">Elimina</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="saveModalLabel">Nuova ricetta</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">Nome ricetta</span>
+                                    <input class="form-control" placeholder="Nome" aria-label="Nome" aria-describedby="basic-addon1" [(ngModel)]="newRecipeName" type="text">
+                                </div>
+                                <div class="modal-body input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">Immagine</span>
+                                    <input class="form-control" placeholder="URL" aria-label="url" aria-describedby="basic-addon1" [(ngModel)]="recipeImage" type="text">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="saveRecipe()">Salva</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container position-relative d-flex flex-column">
+                            <div class="my-buttons d-flex justify-content-end">
+                                <button [disabled]="done.length==0" class="btn btn-sm rounded btn-success z-2" data-bs-toggle="modal" data-bs-target="#saveModal">Salva</button>
+                                <button [disabled]="done.length==0" class="btn btn-sm rounded btn-light z-2" (click)="resetPlate()">Svuota</button>
+                                <button [disabled]="done.length==0" class="btn btn-sm rounded btn-danger z-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Elimina</button>
+                            </div>
+                            <div class="plate-container">
+                                <div class="drop-zone-plate rounded"
+                                cdkDropList
+                                #doneList="cdkDropList"
+                                [cdkDropListData]="done"
+                                [cdkDropListConnectedTo]="[todoList]"
+                                (cdkDropListDropped)="drop($event)"
+                                >
+                                    <img class="plate-img" src="../../assets/plate.png" alt="piatto">
+                                    <div class="drag-el-plate" draggable="true" *ngFor="let food of done" cdkDrag>
+                                        <div class="img-wrapper">
+                                            <img src="{{food.image}}" alt="{{food.name}}" class="food-img-plate">
+                                        </div>
+                                    </div>
+                                </div>    
+                            </div>
+                        </div>
+
+                        <div class="drag-me-text position-absolute d-flex flex-column">
+                            <span class="text-secondary">Drag here!</span>
+                            <img class="arrow" src="../../assets/pngwing.png" alt="">
+                        </div>
+                    </div>
+
+                    <!-- Colonna di destra - Human -->
+                    <div class="col-4 position-relative d-flex flex-column justify-content-center align-items-center px-5 py-1 position-relative overflow-hidden">
+
+
+
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <img class="human-img d-block" src="../../assets/icona uomo.png" alt="human">
+                            <div class="d-flex flex-column justify-content-start">
+
+                                <!-- Aria -->
+                                <div class="sky transition position-absolute d-flex align-items-center" [style.transform] = "scale">
+                                </div>
+                                <div *ngIf="scaleString != 'scale(0)'" class="point sky-point" data-bs-toggle="dropdown" aria-expanded="false"></div>
+                                <div class="dropdown-menu text-bg-success mb-3 p-4" style="max-width: 18rem;">
+                                    <div class="card-header border-bottom mb-3">Footprint</div>
+                                    <div class="card-body">
+                                    <h5 class="card-title">Emissioni di CO2</h5>
+                                    <p class="card-text">La tua ricetta ha prodotto CO2 pari a:</p>
+                                    <h3 class="text-end">{{this.getTotalFootprint(CF) | number:'1.0-2' : 'it'}} mc</h3> 
+                                    </div>
+                                </div>
+
+                                <!-- Terreno -->
+                                <div class="soil transition position-absolute d-flex align-items-center" [style.transform] = "scale">
+                                </div>
+                                <div *ngIf="scaleString != 'scale(0)'" class="point soil-point" data-bs-toggle="dropdown" aria-expanded="false">
+                                </div>
+                                <div class="dropdown-menu text-bg-success mb-3 p-4" style="max-width: 18rem;">
+                                    <div class="card-header border-bottom mb-3">Footprint</div>
+                                    <div class="card-body">
+                                      <h5 class="card-title">Consumo di terreno</h5>
+                                      <p class="card-text">La tua ricetta ha consumato terreno pari a:</p>
+                                      <h3 class="text-end">{{this.getTotalFootprint(EF) | number:'1.0-2' : 'it'}} mq</h3> 
+                                    </div>
+                                </div>
+
+                                <!-- Acqua -->
+                                <div class="water transition position-absolute d-flex align-items-center" [style.transform] = "scale">
+                                </div>
+                                <div *ngIf="scaleString != 'scale(0)'" class="point water-point" data-bs-toggle="dropdown" aria-expanded="false"></div>
+                                <div class="dropdown-menu text-bg-success mb-3 p-4" style="max-width: 18rem;">
+                                    <div class="card-header border-bottom mb-3">Footprint</div>
+                                    <div class="card-body">
+                                      <h5 class="card-title">Consumo di acqua</h5>
+                                      <p class="card-text">La tua ricetta ha consumato</p>
+                                      <h3 class="d-inline mt-0">{{this.getTotalFootprint(WF) | number:'1.0-2' : 'it'}}</h3><span class="card-text"> litri di acqua</span> 
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="d-flex">
+                                <div class="row d-flex flex-column justify-content-end stat-container w-100 h-100">
+<!--                                     <div [style.height.px] = "scale" class="transition">
+                                        <div class="stat-single-container transition d-flex flex-column justify-content-end height-33">
+                                            <div class="w-100 z-n1 div-img-stat-cloud"><span *ngIf="getTotalWeight()" class="text-dark bold">Air: {{getTotalWeight()}} mc</span></div>
+                                        </div>
+                                        <div class="stat-single-container transition d-flex flex-column justify-content-end height-33">
+                                            <div class="w-100 z-n1 div-img-stat-water"><span *ngIf="getTotalWeight()" class="text-light bold">Water: {{getTotalWeight()}} L</span></div>
+                                        </div>
+                                        <div class="stat-single-container transition d-flex flex-column justify-content-end height-33">
+                                            <div class="w-100 z-n1 div-img-stat-soil"><span *ngIf="getTotalWeight()" class="text-light bold">Soil: {{getTotalWeight()}} mq</span></div>                                  
+                                        </div>
+                                    </div> -->
+                                </div>  
+                                <div class="footprint-values-bar">
+                                </div>
+                                <div class="footprint-bar transition bg-success" [style.height.px] = "scaleValue">
+                                    <span class="footprint-bar-text"><i class="fa-solid fa-chevron-right bar-chevron transition text-success"></i><span class="total-bar ms-3 fw-bold">Total {{getTotalWeight() | number:'1.0-2' : 'it'}}</span></span>
+                                </div>
+                            </div>                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="print-total px-4 py-2 border-top bg-success-subtle fixed-bottom d-flex justify-content-between position-relative">
+    <div>
+        <span class="d-block fw-bold fs-3">Footprint:</span>
+        <span class="d-block fw-bold fs-1">{{ getTotalWeight() | number:'1.0-2' : 'it'}}</span>
+    </div>
+    <div class="d-flex align-items-center">
+        <button [disabled]="done.length==0" (click)="overlaySwitch()" class="btn btn-lg btn-success" type="button" data-bs-toggle="modal" data-bs-target=".resultModal">Risultato</button>
+    </div>
+    <div class="position-absolute credits">
+        <span>Carraro LAB s.r.l. -{{ todayDate}}-</span>
+    </div>
+</div>
+<div *ngIf="overlay" class="layover"></div>
+
+<!-- Finestra risultati -->
+<div *ngIf="overlay" class="results rounded p-5" id="resultsPDF">
+    <div id="resultsPDF">
+
+        <h3 class="mb-3 border-bottom">La tua ricetta</h3>
+        <ul class="list-group my-3">
+            <li *ngFor="let food of done; let i = index" class="list-none">
+                <ul *ngIf="food.ingredients" class="border-bottom pb-3">
+                    <h5 class="mt-3">{{food.name}}</h5>
+                    <li *ngFor="let ingredient of food.ingredients; let index = index" class="list-group-item border-0">
+                        {{ingredient.name}} {{ingredient.defaultWeight}} gr.
+                    </li>
+                </ul>
+                <ul *ngIf="!food.ingredients" class="border-bottom pb-3">
+                    <li class="list-group-item border-0">
+                        {{food.name}} {{food.defaultWeight}} gr.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="container d-flex justify-content-between">
+            <div class="row w-100">
+
+                <div class="col-6">
+                    <h3>Footprint della tua ricetta</h3>
+                    <ul class="list-group border rounded my-3 my-list">
+                        <li class="list-group-item border-0 border-bottom">
+                            Consumo di acqua: {{this.getTotalFootprint(WF) | number:'1.0-2' : 'it'}} L
+                        </li>
+                        <li class="list-group-item border-0 border-bottom">
+                            Consumo di suolo: {{this.getTotalFootprint(EF) | number:'1.0-2' : 'it'}} mq
+                        </li>
+                        <li class="list-group-item border-0">
+                            Emissioni di CO2: {{this.getTotalFootprint(CF) | number:'1.0-2' : 'it'}} mc
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-6">
+                    <h3>Valori nutrizionali</h3>
+                    <ul class="list-group border rounded my-3">
+                        <li class="list-group-item border-0 border-bottom">
+                            Calorie: {{getTotalKcal()}} Kcal
+                        </li>
+                        <li class="list-group-item border-0 border-bottom">
+                            Proteine: {{getTotalWeight()}} gr.
+                        </li>
+                        <li class="list-group-item border-0 border-bottom">
+                            Carboidrati: {{getTotalWeight()}} gr.
+                        </li>
+                        <li class="list-group-item border-0 border-bottom">
+                            Zuccheri: {{getTotalWeight()}} gr.
+                        </li>
+                        <li class="list-group-item border-0">
+                            Grassi: {{getTotalWeight()}} gr.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-danger" (click)="overlaySwitch()">Chiudi</button>
+        <button class="btn btn-success" id="savePdf">Salva PDF</button>
+    </div>
+</div>
+
+<!-- [style]="getTotalWeight() > 5000 && getTotalWeight() < 20000? 'margin-bottom: -90px;' : 'margin-bottom: -55px;'"
+ -->

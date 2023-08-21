@@ -1,1 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+@use "./app/styles/variables.scss";
+@import "~bootstrap/dist/css/bootstrap.css";
+
+html, body { height: 100%; }
+body { 
+    margin: 0; 
+    padding-top: 70px;
+    padding-bottom: 150px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}

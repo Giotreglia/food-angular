@@ -1,0 +1,422 @@
+
+@import "../styles/variables.scss";
+
+/* Stili generali */
+.ms_card {
+  cursor: pointer;
+}
+
+/* Stili per le immagini degli alimenti */
+.food-img {
+  height: 50px;
+  margin: auto;
+  display: block;
+}
+
+.food-img-plate {
+  height: 100px;
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+/* Stili per le zone di rilascio degli alimenti */
+.drop-zone-food-container {
+  height: 500px;
+  overflow-y: auto;
+}
+
+.drop-zone-food {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 20px;
+}
+
+/* Stile per close button */
+
+.my-buttons {
+  gap: 4px;
+  width: 100%;
+
+}
+
+/* Stili per la zona del piatto */
+.drop-zone-plate {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 10px;
+  min-height: 200px;
+  width: 100%;
+  border: 1px dashed grey;
+  display: flex;
+  justify-content: end;
+}
+
+/* Stili per gli elementi trascinabili */
+.drag-el {
+  text-align: center;
+  padding: 5px;
+  margin-bottom: 10px;
+  cursor: grab;
+  width: calc(100% / 3);
+  height: 100%;
+  overflow-x: auto;
+}
+
+.drag-el-plate {
+  cursor: grab;
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.my-btn {
+  padding: 5px, 10px;
+  font-size: 16px;
+}
+
+/* Stili per il piatto e gli ingredienti */
+.plate-container {
+  position: relative;
+  height: 230px;
+}
+
+.plate-img {
+  width: 200px;
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+/* Stili per il peso degli ingredienti */
+.ingredient-weight {
+  font-size: 12px;
+}
+
+/* Stili per la rappresentazione umana */
+.human-img {
+  height: 300px;
+  margin-bottom: -55px;
+  z-index: 10;
+}
+
+/* Stili di transizione */
+.transition {
+transition: all 0.8s;
+}
+
+/* Stili per la barra del footprint */
+.footprint-bar {
+position: absolute;
+right: 0;
+bottom: 0;
+border-top: 1px black solid;
+width: 15px;
+z-index: 11;
+}
+
+/* Stili per la barra dei valori del footprint */
+.footprint-values-bar {
+background: linear-gradient(0deg, rgb(21, 129, 0) 0%, rgba(255,239,0,1) 50%, rgba(255,0,0,1) 100%);
+height: 100%;
+width: 15px;
+position: absolute;
+right: 0;
+bottom: 0;
+height: 100%;
+z-index: 5;
+}
+
+/* Altri stili e classi... */
+
+
+  
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.height-33 {
+  height: calc(100%/3);
+}
+
+.div-img-stat-cloud {
+  background-image: url('../../assets/clouds.png');
+  background-size: cover;
+  height: 100%;
+}
+
+.div-img-stat-water {
+  background-image: url('../../assets/waves.png');
+  background-size: cover;
+  background-position: bottom;
+  height: 100%;
+}
+
+.div-img-stat-soil {
+  background-image: url('../../assets/soil.jpeg');
+  background-size: cover;
+  height: 100%;
+}
+
+.stat-container {
+  position: absolute;
+  left: 20px;
+  bottom: 0;
+  height: 100%;
+}
+
+.stat-single-container {
+  max-height: calc(100% / 3);
+}
+
+.print-total {
+  width: 100%;
+}
+
+.recipe {
+  height: 250px;
+  overflow-y: auto;
+}
+
+.drag-me-text {
+  left: 50px;
+  bottom: 230px;
+  font-size: 20px;
+  width: 100px;
+  font-family: 'Patrick Hand', cursive;
+}
+
+.arrow {
+  height: 50px;
+  width: 50px;
+  margin-left: 25%;
+  margin-top: 10px;
+  transform: rotate(255deg);
+}
+
+.soil {
+  width: 100px;
+  height: 100px;
+  background-image: url('../../assets/icona terra.png');
+  background-size: contain;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: 9;
+  transform-origin: center;
+  bottom: 150px;
+  left: 50%;
+}
+
+.water {
+  width: 100px;
+  height: 100px;
+  background-image: url('../../assets/icona acqua.png');
+  background-size: contain;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: -1;
+  transform-origin: center;
+  bottom: 120px;
+  left: 50%;
+}
+
+.sky {
+  width: 100px;
+  height: 100px;
+  background-image: url('../../assets/icona atmosfera CO2.png');
+  background-size: contain;
+  background-position: top;
+  background-repeat: no-repeat;
+  z-index: 1;
+  transform-origin: center;
+  top: 100px;
+  left: 50%;
+}
+
+/* .my-range {
+  background: linear-gradient(90deg, rgba(43,255,0,1) 0%, rgba(255,239,0,1) 50%, rgba(255,0,0,1) 100%); 
+
+} */
+
+.my-range::-webkit-slider-thumb {
+  background: rgb(21, 129, 0);
+}
+
+.my-range::-moz-range-thumb {
+  background: rgb(21, 129, 0);
+}
+
+.my-range::-ms-thumb {
+  background: rgb(21, 129, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-range::-webkit-slider-thumb {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+.form-range::-webkit-slider-thumb:active {
+  background-color: #FF8000;
+}
+.form-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 0.5rem;
+  color: transparent;
+  cursor: pointer;
+  background: linear-gradient(90deg, rgba(21, 129, 0,1) 0%, rgba(255,239,0,1) 50%, rgba(255,0,0,1) 100%);
+  border-color: transparent;
+  border-radius: 1rem;
+}
+
+/* Stili per il testo della barra del footprint */
+.footprint-bar-text {
+  font-size: 12px;
+  width: 100px;
+  position: absolute;
+  top: -15px;
+  left: -20px;
+  transition: all 0.5s;
+  }
+
+.bar-chevron{
+  transform: rotate(45deg);
+}
+
+.footprint-bar-text:hover {
+  left: -80px;
+}
+
+.footprint-bar-text:hover .total-bar {
+  display: inline;
+}
+
+.total-bar {
+  display: none;
+}
+
+.ingredients-col {
+  min-height: 750px;
+}
+
+.point {
+  position: relative;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  background-color: lime;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.point:hover {
+  border: 2px solid yellow;
+}
+
+.water-point {
+  position: absolute;
+  left: 25%;
+  bottom: 60px;
+  z-index: 10;
+}
+
+.sky-point {
+  position: absolute;
+  left: 30%;
+  top: 60px;
+  z-index: 10;
+}
+
+.soil-point {
+  position: absolute;
+  right: 20%;
+  bottom: 180px;
+  z-index: 10;
+} 
+
+.layover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: 0.6);
+  z-index: 100;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70vw;
+  height: 70vh;
+  background-color: white;
+  z-index: 101;
+  overflow-y: auto;
+}
+
+.list-none {
+  list-style: none;
+}
+
+.credits {
+  left: 50%;
+  bottom: 5px;
+  font-style: italic;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+
+.my-list {
+  height: 206px;
+
+  li:last-child {
+    border-bottom: 0;
+  }
+}
+
+.count-results {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: lightgrey;
+  font-style: italic;
+}
+
+
+
+
+
+
+  
