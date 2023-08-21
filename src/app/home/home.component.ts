@@ -282,7 +282,7 @@ export class HomeComponent {
     console.log(this.weight)
     if (this.weight > 0) {
       this.scaleValue = this.weight / 50;
-      this.scaleString = `scale(${this.scaleValue / 300})`;
+      this.scaleString = `scale(${1 + this.scaleValue / 300})`;
     } else {
       this.scaleString = 'scale(0)';
     }
